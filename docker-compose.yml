@@ -20,8 +20,8 @@ services:
 
   river-sidecar:
     build:
-      context: .
-      dockerfile: src/river-sidecar/Dockerfile
+      context: ${RIVER_INGEST_DIR:-../river-ingest}
+      dockerfile: river-sidecar/Dockerfile
     ports:
       - "4317:4317"
     depends_on:
@@ -55,8 +55,8 @@ services:
 
   river-ingestion:
     build:
-      context: .
-      dockerfile: src/river-ingestion/Dockerfile
+      context: ${RIVER_INGEST_DIR:-../river-ingest}
+      dockerfile: river-ingestion/Dockerfile
     depends_on:
       localstack:
         condition: service_healthy
@@ -88,16 +88,16 @@ services:
       GF_AUTH_DISABLE_LOGIN_FORM: "true"
       GF_INSTALL_PLUGINS: grafana-clickhouse-datasource
     volumes:
-      - ./infra/grafana/provisioning:/etc/grafana/provisioning
-      - ./infra/grafana/dashboards:/var/lib/grafana/dashboards
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
     depends_on:
       - victoriametrics
       - clickhouse
 
   api:
     build:
-      context: .
-      dockerfile: src/river-query-api/Dockerfile
+      context: ${RIVER_QUERY_DIR:-../river-query}
+      dockerfile: river-query-api/Dockerfile
     ports:
       - "8080:8080"
     depends_on:
@@ -116,7 +116,7 @@ services:
 
   demo-app:
     build:
-      context: src/demo-app
+      context: demo-app
     depends_on:
       - river-sidecar
     environment:

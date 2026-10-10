@@ -1,0 +1,15 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  compose:
+    name: Validate compose file
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: docker compose config
+        run: docker compose config -q
